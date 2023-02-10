@@ -11,31 +11,44 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+header=st.container()
+dataset=st.container()
+graph=st.container()
 
-st.text('This is a quick demo of how to look up a stock price and graph it')
-st.text('User can select between 3 daily data series to plot!')
+with header:
+    st.header('This is a quick demo of how to look up a stock price and graph it (courtesy: Yahoo Finance)')
+    info='''First select a stock symbol, you will see a table of daily activities and also
+select between 3 daily data series to plot!'''
+    st.text(info)
 
-stkopt=['AAPL','AMZN','GOOG','AMD']
-stkslct=st.selectbox('which of these stocks would you like to retrieve info for?', stkopt)
+with dataset:
+    
+    stkopt=[' ','AAPL','AMZN','GOOG','AMD']
+    stkslct=st.selectbox('Which of these stocks would you like to retrieve info for?', stkopt)
+ 
+    if stkslct==' ':
+        pass
+    else:
+        df = yf.download(
+            stkslct,
+            start="2022-01-01",
+            end="2023-01-31",
+            progress=False,)
+        df=df.sort_index(axis = 0,ascending=False)
+        st.write(df)
 
-df = yf.download(
-    stkslct,
-    start="2022-01-01",
-    end="2023-01-31",
-    progress=False,
-)
+    
 
-st.write(df)
-
-gph_options=['Open','High','Close']
-
-#fig = px.line(df,x=df.index, y=gph_col, title='Daily AAPL Price', markers=True)
-#fig.write_html('first_figurez.html', auto_open=True)
-
-
-gph_col=st.selectbox('Which of these series would you like to see:', gph_options)
-ttle='Daily price for: ' + stkslct
-
-fig=px.line(df,x=df.index, y=gph_col, title=ttle, markers=True)
-
-st.write(fig)
+with graph:
+    
+    if stkslct==' ':
+        pass
+    else:
+        
+        gph_options=['Open','High','Close']
+        gph_col=st.selectbox('Which of these series would you like to see:', gph_options)
+        ttle='Daily price for: ' + stkslct
+        
+        fig=px.line(df,x=df.index, y=gph_col, title=ttle, markers=True)
+        
+        st.write(fig)
