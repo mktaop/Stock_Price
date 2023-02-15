@@ -10,41 +10,49 @@ import yfinance as yf
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from streamlit_option_menu import option_menu  
 
-header=st.container()
-dataset=st.container()
-graph=st.container()
+page_title="Stock Info & Chart - Select a stock symbol from the drop down menu"
+page_icon=":chart_with_upwards_trend:"
+layout="centered"
 
-with header:
-    st.header('This is a quick demo of how to look up a stock price and graph it (courtesy: Yahoo Finance)')
-    info='''First select a stock symbol, you will see a table of daily activities and also
-select between 3 daily data series to plot!'''
-    st.text(info)
+st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
+st.title(page_icon + " " + page_title)
 
-with dataset:
-    
-    stkopt=[' ','AAPL','AMZN','GOOG','AMD']
-    stkslct=st.selectbox('Which of these stocks would you like to retrieve info for?', stkopt)
+selected = option_menu(
+    menu_title=None,
+    options=["Table", "Visualization"],
+    icons=["pencil-fill","bar-chart-fill"],
+    orientation="horizontal"
+    )
+
+stkopt=[' ','AAPL','AMZN','GOOG','AMD']
+stkslct=st.selectbox('Which of these stocks would you like to retrieve info for?', stkopt)
+if stkslct==' ':
+    pass
+else:
+    df = yf.download(stkslct,start="2022-01-01",end="2023-01-31",progress=False,)
+
+if selected == "Table":
+
  
     if stkslct==' ':
         pass
     else:
-        df = yf.download(
-            stkslct,
-            start="2022-01-01",
-            end="2023-01-31",
-            progress=False,)
-        df=df.sort_index(axis = 0,ascending=False)
+        msg1="This is a data table for: " + stkslct
+        st.text(msg1)
         st.write(df)
 
+if selected == "Visualization":
     
 
-with graph:
     
     if stkslct==' ':
         pass
     else:
-        
+        msg2="This is a daily chart for: " + stkslct
+        st.text(msg2)
+        df=df.sort_index(axis = 0,ascending=False)
         gph_options=['Open','High','Close']
         gph_col=st.selectbox('Which of these series would you like to see:', gph_options)
         ttle='Daily price for: ' + stkslct
