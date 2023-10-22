@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run grphstckprice.py
+web: sh setup.sh && streamlit run gphstckprice.py
